@@ -1,4 +1,4 @@
-AWS App Project — Next.js + Express.js + Prisma/SQLite
+# AWS App Project — Next.js + Express.js + Prisma/SQLite
 
 Aplicação full-stack simples com Login e Dashboard de usuário.
 Permite criar conta (e-mail/senha) e, autenticado, visualizar/editar os dados do perfil.
@@ -8,7 +8,7 @@ Acesse em produção:
 
 Healthcheck da API: http://56.125.247.198/api/health
 
-🧠 Lógica da aplicação
+# 🧠 Lógica da aplicação
 
 Autenticação: e-mail + senha. A senha é hasheada no backend antes de salvar (ex.: bcrypt).
 
@@ -24,7 +24,7 @@ Persistência: Prisma com SQLite (arquivo único, ideal para MVP).
 
 CORS/Origem: o backend valida a origem (FRONT_ORIGIN) para permitir requisições do front.
 
-🏗️ Arquitetura (alto nível)
+# 🏗️ Arquitetura (alto nível)
 [Cliente] ──HTTP──> [Nginx: :80]
    ├ /api/*  ─────> proxy → http://127.0.0.1:8000  (Express)
    └ /*      ─────> proxy → http://127.0.0.1:3000  (Next.js)
@@ -40,7 +40,7 @@ systemd mantém frontend e backend sempre rodando (reinício automático).
 
 ℹ️ Detalhe do proxy: o bloco location /api/ { proxy_pass http://127.0.0.1:8000/; } remove o prefixo /api/ ao encaminhar (ex.: /api/health → /health). Isso acontece porque o proxy_pass termina com /.
 
-🧰 Tecnologias
+# 🧰 Tecnologias
 
 Frontend: Next.js 16 (React + TypeScript + Tailwind)
 
@@ -52,7 +52,7 @@ Banco: SQLite (arquivo em backend/prisma/prod.db)
 
 Infra: Ubuntu em AWS EC2, Nginx (reverse proxy), systemd (process manager)
 
-📁 Estrutura de pastas
+# 📁 Estrutura de pastas
 AWS-App-Project/
 ├─ backend/
 │  ├─ src/                 # rotas/middlewares Express
@@ -66,7 +66,7 @@ AWS-App-Project/
    ├─ package.json
    └─ .env.local           # URL da API que o front consome
 
-🔐 Variáveis de ambiente
+# 🔐 Variáveis de ambiente
 backend/.env
 PORT=8000
 DATABASE_URL="file:./prod.db"      # cria/usa backend/prisma/prod.db
@@ -77,10 +77,8 @@ COOKIE_SECURE=false                # mude para true em HTTPS
 
 frontend/.env.local
 NEXT_PUBLIC_API_BASE=http://56.125.247.198/api
-# em HTTPS + domínio:
-# NEXT_PUBLIC_API_BASE=https://seu-dominio.com/api
 
-💻 Desenvolvimento local
+# 💻 Desenvolvimento local
 
 Sempre indico a pasta antes do comando.
 
@@ -111,7 +109,7 @@ Front: http://localhost:3000/login
 
 API: curl -i http://localhost:8000/health
 
-🚀 Deploy na AWS EC2 (produção)
+# 🚀 Deploy na AWS EC2 (produção)
 0) Pré-requisitos (na EC2)
 sudo apt update
 sudo apt -y install nginx
@@ -224,7 +222,7 @@ Testar via Nginx:
 curl -i http://127.0.0.1/api/health
 curl -I http://127.0.0.1/
 
-🌐 Como funciona o proxy (explicação rápida)
+# 🌐 Como funciona o proxy
 
 O Nginx recebe todas as requisições na porta 80.
 
@@ -237,7 +235,7 @@ Qualquer outra rota (ex.: /, /login, /dashboard) é repassada para o Next.js (po
 
 Isso permite ter um único endpoint público (IP/domínio) e separar front e back internamente.
 
-🧪 URLs de teste (produção)
+# 🧪 URLs de teste (produção)
 
 Frontend: http://56.125.247.198
 
@@ -253,7 +251,7 @@ NEXT_PUBLIC_API_BASE=https://seu-dominio.com/api
 
 COOKIE_SECURE=true
 
-🛠️ Troubleshooting
+# 🛠️ Troubleshooting
 
 Frontend cai em produção:
 Rode o build antes do next start:
