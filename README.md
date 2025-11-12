@@ -271,7 +271,3 @@ Veja os logs dos serviços:
 
 sudo journalctl -xeu app-backend.service
 sudo journalctl -xeu app-frontend.service
-
-📜 Licença
-
-Defina a licença (ex.: MIT) conforme sua necessidade.
