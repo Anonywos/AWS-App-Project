@@ -14,6 +14,17 @@ type LoginPayload = {
     password: string;
 };
 
+type GetVideo = {
+    id: string,
+    quality: string,
+}
+
+// type FileUploadPayload = {
+//     file: File;
+//     name: string;
+//     tags: string[];
+//     description?: string;
+// };
 
 export async function apiRegister(data: RegisterPayload) {
     const res = await fetch(`${API_BASE}/auth/register`, {
@@ -63,6 +74,43 @@ password?: string;
     credentials: "include",
     body: JSON.stringify(data),
     });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function apiPostFile(formData: FormData) {
+    const res = await fetch(`${API_BASE}/media/upload`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function apiGetAllFiles() {
+    const res = await fetch(`${API_BASE}/media/list`, {
+        method: "GET",
+        credentials: "include",
+    })
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function apiGetFileById(id: string) {
+    const res = await fetch(`${API_BASE}/media/${id}`, {
+        method: "GET",
+        credentials: "include",
+    })
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+export async function apiDeleteFile(key: string) {
+    const res = await fetch(`${API_BASE}/media/${encodeURIComponent(key)}`, {
+        method: "DELETE",
+        credentials: "include",
+    })
     if (!res.ok) throw new Error(await res.text());
     return res.json();
 }

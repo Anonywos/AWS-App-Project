@@ -5,11 +5,27 @@ import type React from "react"
 import { useRouter } from "next/navigation"
 import { apiGetMe, apiLogout, apiUpdateMe } from "@/lib/api"
 
+export interface userType {
+  full_name: string
+  username: string
+  email: string
+  image_url: string | null
+  description: string | null
+  created_at: string
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [me, setMe] = useState<any>(null)
+  const [user, setUser] = useState<userType>({
+    full_name: "",
+    username: "",
+    email: "",
+    image_url: null,
+    description: null,
+    created_at: "",
+  })
 
   useEffect(() => {
     ;(async () => {
@@ -18,7 +34,7 @@ export default function DashboardPage() {
         router.replace("/login")
         return
       }
-      setMe(u)
+      setUser(u)
       setLoading(false)
     })()
   }, [router])
@@ -35,7 +51,7 @@ export default function DashboardPage() {
         description: String(form.get("description")) || null,
         password: String(form.get("password")) || undefined,
       })
-      setMe(updated)
+      setUser(updated)
     } catch (err: any) {
       setError(err?.message ?? "Erro ao salvar")
     }
@@ -60,21 +76,21 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative h-10 w-10 overflow-hidden rounded-full bg-muted ring-2 ring-border">
-                {me.image_url ? (
+                {user.image_url ? (
                   <img
-                    src={me.image_url || "/placeholder.svg"}
-                    alt={me.full_name}
+                    src={user.image_url || "/placeholder.svg"}
+                    alt={user.full_name}
                     className="h-full w-full object-cover"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-primary text-primary-foreground text-lg font-semibold">
-                    {me.full_name?.charAt(0)?.toUpperCase() || "U"}
+                    {user.full_name?.charAt(0)?.toUpperCase() || "U"}
                   </div>
                 )}
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-foreground">{me.full_name}</h1>
-                <p className="text-sm text-muted-foreground">@{me.username}</p>
+                <h1 className="text-lg font-semibold text-foreground">{user.full_name}</h1>
+                <p className="text-sm text-muted-foreground">@{user.username}</p>
               </div>
             </div>
             <button
@@ -98,32 +114,32 @@ export default function DashboardPage() {
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="flex flex-col items-center text-center">
                 <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full bg-muted ring-4 ring-border">
-                  {me.image_url ? (
+                  {user.image_url ? (
                     <img
-                      src={me.image_url || "/placeholder.svg"}
-                      alt={me.full_name}
+                      src={user.image_url || "/placeholder.svg"}
+                      alt={user.full_name}
                       className="h-full w-full object-cover"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-primary text-primary-foreground text-5xl font-bold">
-                      {me.full_name?.charAt(0)?.toUpperCase() || "U"}
+                      {user.full_name?.charAt(0)?.toUpperCase() || "U"}
                     </div>
                   )}
                 </div>
-                <h2 className="text-xl font-bold text-foreground">{me.full_name}</h2>
-                <p className="text-sm text-muted-foreground mb-3">@{me.username}</p>
-                {me.description && <p className="text-sm text-foreground/80 leading-relaxed">{me.description}</p>}
+                <h2 className="text-xl font-bold text-foreground">{user.full_name}</h2>
+                <p className="text-sm text-muted-foreground mb-3">@{user.username}</p>
+                {user.description && <p className="text-sm text-foreground/80 leading-relaxed">{user.description}</p>}
               </div>
 
               <div className="mt-6 space-y-3 border-t border-border pt-6">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Email</span>
-                  <span className="font-medium text-foreground truncate ml-2">{me.email}</span>
+                  <span className="font-medium text-foreground truncate ml-2">{user.email}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Membro desde</span>
                   <span className="font-medium text-foreground">
-                    {new Date(me.created_at).toLocaleDateString("pt-BR")}
+                    {new Date(user.created_at).toLocaleDateString("pt-BR")}
                   </span>
                 </div>
               </div>
@@ -146,7 +162,7 @@ export default function DashboardPage() {
                   <input
                     id="full_name"
                     name="full_name"
-                    defaultValue={me.full_name}
+                    defaultValue={user.full_name}
                     placeholder="Seu nome completo"
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                   />
@@ -161,7 +177,7 @@ export default function DashboardPage() {
                     <input
                       id="username"
                       name="username"
-                      defaultValue={me.username}
+                      defaultValue={user.username}
                       placeholder="usuario"
                       className="w-full rounded-lg border border-input bg-background pl-8 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                     />
@@ -175,7 +191,7 @@ export default function DashboardPage() {
                   <input
                     id="image_url"
                     name="image_url"
-                    defaultValue={me.image_url ?? ""}
+                    defaultValue={user.image_url ?? ""}
                     placeholder="https://exemplo.com/sua-foto.jpg"
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                   />
@@ -191,7 +207,7 @@ export default function DashboardPage() {
                   <textarea
                     id="description"
                     name="description"
-                    defaultValue={me.description ?? ""}
+                    defaultValue={user.description ?? ""}
                     placeholder="Conte um pouco sobre você..."
                     rows={4}
                     className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 resize-none"
